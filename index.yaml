@@ -2429,6 +2429,40 @@ entries:
     urls:
     - https://github.com/NethermindEth/helm-charts/releases/download/execution-beacon-1.0.0/execution-beacon-1.0.0.tgz
     version: 1.0.0
+  execution-beacon-fallback:
+  - apiVersion: v2
+    created: "2026-03-06T14:23:06.548407614Z"
+    dependencies:
+    - name: common
+      repository: file://../common
+      version: 1.0.0
+    description: A Helm chart for deploying Ethereum execution and consensus clients
+      with HAProxy active-fallback beacon proxy
+    digest: b4cc4879894e5bd627de9effdf3c72c682ae33a31a397c76c10ed644b52f8244
+    home: https://www.ethereum.org/
+    keywords:
+    - ethereum
+    - blockchain
+    - nethermind
+    - prysm
+    - reth
+    - lighthouse
+    - nimbus
+    - lodestar
+    - erigon
+    - teku
+    - besu
+    - p2p
+    - taiko
+    maintainers:
+    - name: 0xDones
+    - name: matilote
+    - name: aivarasko
+    name: execution-beacon-fallback
+    type: application
+    urls:
+    - https://github.com/nme-mvasylenko/helm-charts/releases/download/execution-beacon-fallback-0.1.0/execution-beacon-fallback-0.1.0.tgz
+    version: 0.1.0
   generic-app:
   - apiVersion: v2
     created: "2026-02-24T17:50:36.964912438Z"
@@ -3944,4 +3978,4 @@ entries:
     urls:
     - https://github.com/NethermindEth/helm-charts/releases/download/web3signer-1.0.0/web3signer-1.0.0.tgz
     version: 1.0.0
-generated: "2026-03-05T13:13:19.119007415Z"
+generated: "2026-03-06T14:23:06.548733875Z"

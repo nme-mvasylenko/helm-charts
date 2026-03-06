@@ -2,7 +2,7 @@ apiVersion: v2
 name: execution-beacon-fallback
 description: A Helm chart for deploying Ethereum execution and consensus clients with HAProxy active-fallback beacon proxy
 type: application
-version: 0.1.1
+version: 0.1.2
 keywords:
   - ethereum
   - blockchain

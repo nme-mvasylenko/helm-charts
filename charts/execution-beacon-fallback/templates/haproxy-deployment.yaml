@@ -32,16 +32,17 @@ spec:
             - sh
             - -c
             - |
-              apk add --no-cache gettext
               _KEY="{{ .Values.haproxy.fallback.secretKey }}"
               URL=$(eval echo "\$$_KEY")
               FALLBACK_HOST=$(echo "$URL" | sed 's|https://||; s|http://||' | cut -d'/' -f1 | cut -d':' -f1)
               _PORT=$(echo "$URL" | sed 's|https://||; s|http://||' | cut -d'/' -f1 | awk -F: '{print $NF}' | grep -E '^[0-9]+$')
               FALLBACK_PORT=${_PORT:-443}
+              _RAW_PATH=$(echo "$URL" | sed 's|https://||; s|http://||' | cut -d'/' -f2- | sed 's|/$||')
+              [ -n "$_RAW_PATH" ] && FALLBACK_PATH="/$_RAW_PATH" || FALLBACK_PATH=""
               LOCAL_BEACON_HOST="{{ include "common.names.fullname" . }}"
               LOCAL_BEACON_PORT="{{ index .Values.beacon.restApi.portMap .Values.beacon.client }}"
               KUBE_DNS_IP=$(awk '/^nameserver/{print $2; exit}' /etc/resolv.conf)
-              export FALLBACK_HOST FALLBACK_PORT LOCAL_BEACON_HOST LOCAL_BEACON_PORT KUBE_DNS_IP
+              export FALLBACK_HOST FALLBACK_PORT FALLBACK_PATH LOCAL_BEACON_HOST LOCAL_BEACON_PORT KUBE_DNS_IP
               envsubst < /etc/haproxy-tmpl/haproxy.cfg.tmpl > /etc/haproxy-rendered/haproxy.cfg
           {{- if .Values.haproxy.fallback.existingSecret }}
           envFrom:

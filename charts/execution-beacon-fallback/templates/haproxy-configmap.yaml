@@ -46,6 +46,7 @@ data:
         http-check connect ssl sni ${FALLBACK_HOST}
         http-check send meth GET uri ${FALLBACK_PATH}/eth/v1/node/health hdr Host ${FALLBACK_HOST}
         http-check expect status 200
+        http-request set-header Host ${FALLBACK_HOST}
         http-request set-path ${FALLBACK_PATH}%[path]
         server fallback ${FALLBACK_HOST}:${FALLBACK_PORT} ssl verify none sni str(${FALLBACK_HOST}) check inter {{ .Values.haproxy.checkInterval }}ms fall {{ .Values.haproxy.checkFall }} rise {{ .Values.haproxy.checkRise }}
 

@@ -24,7 +24,9 @@ data:
 
     frontend beacon
         bind *:{{ .Values.haproxy.service.port }}
-        default_backend beacon_backend
+        acl local_up nbsrv(local_backend) gt 0
+        use_backend fallback_backend unless local_up
+        default_backend local_backend
 
     resolvers kube-dns
         nameserver dns1 ${KUBE_DNS_IP}:53
@@ -34,11 +36,16 @@ data:
         timeout resolve 1s
         timeout retry 1s
 
-    backend beacon_backend
+    backend local_backend
         option httpchk GET /eth/v1/node/health
         http-check expect status 200
         server local ${LOCAL_BEACON_HOST}:${LOCAL_BEACON_PORT} check inter {{ .Values.haproxy.checkInterval }}ms fall {{ .Values.haproxy.checkFall }} rise {{ .Values.haproxy.checkRise }} resolvers kube-dns resolve-prefer ipv4
-        server fallback ${FALLBACK_HOST}:${FALLBACK_PORT} ssl verify none check inter {{ .Values.haproxy.checkInterval }}ms fall {{ .Values.haproxy.checkFall }} rise {{ .Values.haproxy.checkRise }} backup
+
+    backend fallback_backend
+        option httpchk GET ${FALLBACK_PATH}/eth/v1/node/health
+        http-check expect status 200
+        http-request set-path ${FALLBACK_PATH}%[path]
+        server fallback ${FALLBACK_HOST}:${FALLBACK_PORT} ssl verify none check inter {{ .Values.haproxy.checkInterval }}ms fall {{ .Values.haproxy.checkFall }} rise {{ .Values.haproxy.checkRise }}
 
     frontend stats
         bind *:8404

@@ -26,7 +26,7 @@ spec:
     spec:
       initContainers:
         - name: envsubst
-          image: "{{ .Values.haproxy.image.repository }}:{{ .Values.haproxy.image.tag }}"
+          image: nginx:latest
           imagePullPolicy: {{ .Values.haproxy.image.pullPolicy }}
           command:
             - sh

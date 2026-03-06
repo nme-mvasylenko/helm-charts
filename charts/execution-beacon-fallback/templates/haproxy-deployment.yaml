@@ -39,8 +39,14 @@ spec:
               FALLBACK_PORT=${_PORT:-443}
               LOCAL_BEACON_HOST="{{ include "common.names.fullname" . }}"
               LOCAL_BEACON_PORT="{{ index .Values.beacon.restApi.portMap .Values.beacon.client }}"
-              export FALLBACK_HOST FALLBACK_PORT LOCAL_BEACON_HOST LOCAL_BEACON_PORT
-              envsubst < /etc/haproxy-tmpl/haproxy.cfg.tmpl > /etc/haproxy-rendered/haproxy.cfg
+              KUBE_DNS_IP=$(awk '/^nameserver/{print $2; exit}' /etc/resolv.conf)
+              sed \
+                -e "s|\${LOCAL_BEACON_HOST}|${LOCAL_BEACON_HOST}|g" \
+                -e "s|\${LOCAL_BEACON_PORT}|${LOCAL_BEACON_PORT}|g" \
+                -e "s|\${FALLBACK_HOST}|${FALLBACK_HOST}|g" \
+                -e "s|\${FALLBACK_PORT}|${FALLBACK_PORT}|g" \
+                -e "s|\${KUBE_DNS_IP}|${KUBE_DNS_IP}|g" \
+                /etc/haproxy-tmpl/haproxy.cfg.tmpl > /etc/haproxy-rendered/haproxy.cfg
           {{- if .Values.haproxy.fallback.existingSecret }}
           envFrom:
             - secretRef:
